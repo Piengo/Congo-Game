@@ -13,7 +13,7 @@
 using namespace std;
 
 vector<vector<vector<char>>> boards;
-string turn;
+vector<string> turn;
 vector<vector<string>> positions;
 vector<string> x(9);
 
@@ -261,21 +261,22 @@ void putIntoBoard(string input){
 
 void takeInInput()
 {
-    int N = 1;
-	// TODO: fix for subm
+    int N;
     // cin >> N;
-    // cin.ignore();
+	// string temp;
+	// getline(cin, temp);
+	// N = stoi(temp);
+	N = 1;
 
     vector<string> input(N);
 
     for(int i = 0; i < N; i++){
-		// TODO: fix for subm
-    	// string x = "2ele1z/ppppppp/7/7/7/PPP1PPP/2ELE1Z w 4";
-		string x = "3l3/p6/7/7/1Z1P1p1/3L3/1p5 b 42";
+    	string x = "4E2/2P1l1p/7/7/2L4/2p4/4e2 w 36";
+		// string x;
     	// getline(cin, x);
 		vector<string> res = splitString(x, ' ');
 		putIntoBoard(res[0]);
-		turn = res[1];
+		turn.push_back(res[1]);
     	input[i] = x;
 	}
 
