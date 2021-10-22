@@ -378,12 +378,15 @@ int main(){
     takeInInput();
     // cout<<otherLionIsOpen();
     for(boardIndex=0; boardIndex<boards.size(); boardIndex++){
-        // vector<string> moves = lionMoves();
-        // vector<string> moves = zebraMoves();
-        // vector<string> moves = elephantMoves();
-        vector<string> moves = pawnMoves();
-        // cout<< boardIndex << "th iteration:" << endl;
+        vector<string> moves = lionMoves();
         printVector(moves);
+        moves = zebraMoves();
+        printVector(moves);
+        moves = elephantMoves();
+        printVector(moves);
+        moves = pawnMoves();
+        printVector(moves);
+        cout<<endl;
     }
     boardIndex = 0;
     
