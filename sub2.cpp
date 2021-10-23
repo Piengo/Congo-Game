@@ -528,7 +528,7 @@ vector<string> blackPawnMoves(){
 
     vector<string> res = splitString(positions[boardIndex][1], ' ');
     if(res.size()<3){
-        return;
+        return {};
     }
     for(int i=2; i<res.size(); i++){
         coords.push_back(res[i]);
@@ -584,7 +584,7 @@ vector<string> whitePawnMoves(){
 
     vector<string> res = splitString(positions[boardIndex][0], ' ');
     if(res.size()<3){
-        return;
+        return {};
     }
     for(int i=2; i<res.size(); i++){
         coords.push_back(res[i]);
