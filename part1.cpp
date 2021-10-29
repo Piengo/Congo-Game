@@ -14,8 +14,10 @@ using namespace std;
 
 vector<vector<vector<char>>> boards;
 vector<string> turn;
+vector<int> moveNumbers;
 vector<vector<string>> positions;
 vector<string> x(9);
+vector<string> moves;
 
 string sortInAlph(string x){
     vector<string>temp;
@@ -271,12 +273,17 @@ void takeInInput()
     vector<string> input(N);
 
     for(int i = 0; i < N; i++){
-    	string x = "4E2/2P1l1p/7/7/2L4/2p4/4e2 w 36";
+    	string x = "1z5/pPp1lP1/5ep/4P1e/4L1p/2p2pP/7 b 35";
+		string move = "f5f7";
 		// string x;
     	// getline(cin, x);
+		// string move;
+    	// getline(cin, move);
+		moves.push_back(move);
 		vector<string> res = splitString(x, ' ');
 		putIntoBoard(res[0]);
 		turn.push_back(res[1]);
+		moveNumbers.push_back(stoi(res[2]));
     	input[i] = x;
 	}
 
