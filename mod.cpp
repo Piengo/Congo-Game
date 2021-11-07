@@ -838,14 +838,50 @@ vector<string> generateMoves(){
     return moves;
 }
 
+int kingSafety(){
+    int teamMatesAround = 0;
+    vector<pair<int, int>> around = {{1,0}, {-1,0}, {0,-1}, {0,1}, {1,1}, {1,-1}, {-1,1}, {-1,-1}};
+
+    if(tempTurn=='b'){
+        string coord = splitString(tempPositions[5], ' ')[2];
+        pair<int, int> pos = convertCoordinates(coord);
+        for(int i=0; i<around.size(); i++){
+            pair<int, int> newMove = {pos.first+lionPossibleMoves[i].first, pos.second+lionPossibleMoves[i].second};
+            if(isInBounds(newMove)){
+                if(isTeamMate(pos, newMove)){
+                    teamMatesAround++;
+                }
+            }
+        }
+    }
+    else{
+        string coord = splitString(tempPositions[4], ' ')[2];
+        pair<int, int> pos = convertCoordinates(coord);
+        for(int i=0; i<around.size(); i++){
+            pair<int, int> newMove = {pos.first+lionPossibleMoves[i].first, pos.second+lionPossibleMoves[i].second};
+            if(isInBounds(newMove)){
+                if(isTeamMate(pos, newMove)){
+                    teamMatesAround++;
+                }
+            }
+        }
+    }
+
+    return teamMatesAround;
+}
+
 int advancedEval(){
     char tempTurnStorage = tempTurn;
     tempTurn = 'w';
     vector<string> whiteMoves = generateMoves();
+    int whiteKingSafety = kingSafety();
     tempTurn = 'b';
     vector<string> blackMoves = generateMoves();
+    int blackKingSafety = kingSafety();
 
-    int ans = calcWhiteMinusBlack() + (whiteMoves.size()-blackMoves.size()) + (whiteAttackScore-blackAttackScore);
+    // take into account king safety when making moves
+    int ans = calcWhiteMinusBlack() + (whiteMoves.size()-blackMoves.size()) + (whiteAttackScore-blackAttackScore)
+        + (whiteKingSafety-blackKingSafety);
 
     tempTurn = tempTurnStorage;
     blackAttackScore = 0;
@@ -997,7 +1033,13 @@ int main(){
     for(boardIndex=0; boardIndex<FENStrings.size(); boardIndex++){
         string s = FENStrings[boardIndex];
         vector<string> sArr = splitString(s, ' ');
-        int value = alphaBeta(s, 4, -10000000, 10000000);
+        // int value = alphaBeta(s, 4, -10000000, 10000000);
+        int value = -1000000000;
+        // iterative deepening
+        for(int deepness = 1; deepness < 5; deepness++) {
+            int newVal = alphaBeta(s, deepness, -10000000, 10000000);
+            value = max(value, newVal);
+        }
         cout << value << endl;
     }
 
