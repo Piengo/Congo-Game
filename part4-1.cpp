@@ -1,15 +1,301 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cstring>
+#include <ostream>
 #include <bits/stdc++.h>
-#include "part1.cpp"
+#include <sstream>
+#include <cstdio>
+#include <fstream>
+#include <string.h>
+#include <algorithm>
 
 using namespace std;
 
-int boardIndex;
+vector<vector<vector<char>>> boards;
+vector<string> turn;
+vector<int> moveNumbers;
+vector<vector<string>> positions;
+vector<string> x(9);
+vector<string> moves;
 
-vector<int> answers;
-vector<vector<char>> tempBoard;
-vector<string> tempPositions;
-char tempTurn;
-int tempMoveNumber;
+string sortInAlph(string x){
+    vector<string>temp;
+    size_t pos = 0;
+    string space = " ";
+    string token;
+    while((pos = x.find(space)) != std::string::npos){
+        token = x.substr(0, pos);
+        temp.push_back(token);
+        x.erase(0, pos + space.length());
+    }
+
+    temp.push_back(x);
+    sort(temp.begin(), temp.end());
+    string res = "";
+    for(int i = 0;i<temp.size()-1;i++){
+        res += temp[i] + " ";
+    }
+    res += temp[temp.size()-1];
+
+    return res;
+}
+
+vector<string> settingUpBoard(string input){
+    string space = " ";
+	string P;
+    string p;
+	string E;
+	string e;
+	string L;
+	string l;
+	string Z;
+	string z;
+	string sideToPlay;
+	int k = 0;
+	int r = 7;
+	vector<string> output(17);
+
+	string v = "abcdefg";
+    for(int i = 0; i < input.size(); i++){
+
+        std::ostringstream oss;
+        oss << v[k] << r;
+        string str = oss.str();
+        int numSpace = 0;
+        int posOfSecSpace;
+
+        if(input[i] == '/'){
+        	r--;
+        	k=0;
+		}
+		else if(input[i] == 'P'){
+			if(P.empty()){
+				P = str;}
+			else{P = P + " " + str;
+			}
+			k++;
+		}
+        else if(input[i] == 'p'){
+			if(p.empty()){
+				p = str;}
+			else{p = p + " " + str;
+			}
+			k++;
+		}
+		else if(input[i] == 'E'){
+			if(E.empty()){
+				E = str;}
+			else{
+				E = E + " " + str;
+			}
+			k++;
+		}
+		else if(input[i] == 'e'){
+			if(e.empty()){
+				e = str;}
+			else{e = e + " " + str;
+			}
+			k++;
+		}
+		else if(input[i] == 'L'){
+			if(L.empty()){
+				L = str;}
+			else{L = L + " " + str;
+			}
+			k++;
+		}
+		else if(input[i] == 'l'){
+			if(l.empty()){
+				l = str;}
+			else{l = l + " " + str;
+			}
+			k++;
+		}
+		else if(input[i] == 'Z'){
+			if(Z.empty()){
+				Z = str;}
+			else{Z = Z + " " + str;
+			}
+			k++;
+		}
+		else if(input[i] == 'z'){
+			if(z.empty()){
+				z = str;}
+			else{z = z + " " + str;
+			}
+			k++;
+		}
+		else if(input[i] == ' ' && numSpace == 0){
+			numSpace++;
+			if(input[i-1] == 'b'){
+				sideToPlay = "black";
+			}
+			else if(input[i-1] == 'w'){
+				sideToPlay = "white";
+			}
+			else{
+				sideToPlay = " yoh ";
+			}
+		}
+		else if(input[i] == ' ' && numSpace == 1){
+			posOfSecSpace = i;
+		}
+		else{
+			int y;
+			std::stringstream res;
+			res << input[i];
+			res >> y;
+			k += y;
+		}
+	}
+	if(!(P.empty())){
+		output[0] = "white pawn:" + space + sortInAlph(P);
+	}else{
+		output[0] = "white pawn:";
+	}
+	if(!(p.empty())){
+		output[1] = "black pawn:" + space + sortInAlph(p);
+	}else{
+		output[1] = "black pawn:";
+	}
+	if(!(E.empty())){
+		output[2] = "white elephant:" + space + sortInAlph(E);
+	}else{
+		output[2] = "white elephant:";
+	}
+	if(!(e.empty())){
+		output[3] = "black elephant:" + space + sortInAlph(e);
+	}else{
+		output[3] = "black elephant:";
+	}
+	if(!(L.empty())){
+		output[4] = "white lion:" + space + sortInAlph(L);
+	}else{
+		output[4] = "white lion:";
+	}
+	if(!(l.empty())){
+		output[5] = "black lion:" + space + sortInAlph(l);
+	}else{
+		output[5] = "black lion:";
+	}
+	if(!(Z.empty())){
+		output[6] = "white zebra:" + space + sortInAlph(Z);
+	}else{
+		output[6] = "white zebra:";
+	}
+	if(!(z.empty())){
+		output[7] = "black zebra:" + space + sortInAlph(z);
+	}else{
+		output[7] = "black zebra:";
+	}
+
+	output[8] = "side to play:" + space + sideToPlay;
+
+	return output;
+}
+
+vector<string> splitString(string str, char del){
+    vector<string> res;
+    string temp = "";
+
+    for(int i=0; i<str.size(); i++){
+        if(str[i]!=del){
+            temp += str[i];
+        }
+        else{
+            res.push_back(temp);
+            temp = "";
+        }
+    }
+    res.push_back(temp);
+    return res;
+}
+
+bool isNumber(char c){
+    vector<char> v = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+    if(count(v.begin(), v.end(), c)){
+        return true;
+    }
+    return false;
+}
+
+void printBoard(vector<vector<char>> board){
+    for(int i=0; i<7; i++){
+        for(int j=0; j<7; j++){
+            cout << board[i][j];
+            cout << ' ';
+        }
+        cout << endl;
+    }
+}
+
+void putIntoBoard(string input){
+	vector<vector<char>> board = {
+		{'#', '#', '#', '#', '#', '#', '#'},
+		{'#', '#', '#', '#', '#', '#', '#'},
+		{'#', '#', '#', '#', '#', '#', '#'},
+		{'#', '#', '#', '#', '#', '#', '#'},
+		{'#', '#', '#', '#', '#', '#', '#'},
+		{'#', '#', '#', '#', '#', '#', '#'},
+		{'#', '#', '#', '#', '#', '#', '#'},
+	};
+    vector<string> splitBySlash = splitString(input, '/');
+	int rankIterator = 0;
+	// TODO: fix board, is upside down
+    for(int i=0; i<7; i++){
+        string rank = splitBySlash[i];
+        for(int j=0; j<7; j++){
+            if(isNumber(rank[rankIterator])){
+                int number = rank[rankIterator]-'0';
+				j += number-1;
+            }
+            else{
+                board[i][j] = rank[rankIterator];
+            }
+			rankIterator++;
+        }
+		rankIterator = 0;
+    }
+	// printBoard(board);
+	boards.push_back(board);
+}
+
+void takeInInput()
+{
+    int N;
+	string temp;
+	getline(cin, temp);
+	N = stoi(temp);
+
+    vector<string> input(N);
+
+    for(int i = 0; i < N; i++){
+    	// string x = "1z5/pPp1lP1/5ep/4P1e/4L1p/2p2pP/7 b 35";
+		// string move = "f5f7";
+		string x;
+    	getline(cin, x);
+		// string move;
+    	// getline(cin, move);
+		// moves.push_back(move);
+		vector<string> res = splitString(x, ' ');
+		putIntoBoard(res[0]);
+		turn.push_back(res[1]);
+		moveNumbers.push_back(stoi(res[2]));
+    	input[i] = x;
+	}
+
+  	for(int i = 0; i < N; i++){
+		positions.push_back(settingUpBoard(input[i]));
+	    // x = positions[0];
+	    // for(int i = 0; i < x.size(); i++){
+	    // 	cout << x[i] << endl;
+		// }
+	}
+
+}
+
+int boardIndex;
 
 vector<char> whitePieces = {'l', 'p', 'z', 'e'};
 vector<char> blackPieces = {'L', 'P', 'Z', 'E'};
@@ -81,8 +367,8 @@ bool isBlack(char c){
 }
 
 bool isTeamMate(pair<int, int> me, pair<int, int> otherPiece){
-    char myPiece = tempBoard[me.first][me.second];
-    char space = tempBoard[otherPiece.first][otherPiece.second];
+    char myPiece = boards[boardIndex][me.first][me.second];
+    char space = boards[boardIndex][otherPiece.first][otherPiece.second];
     if(space=='#'){
         return false;
     }
@@ -108,21 +394,24 @@ string coordinatesToString(string coord, int col, int row){
 }
 
 bool isEmpty(pair<int, int> pos){
-    return tempBoard[pos.first][pos.second] == '#';
+    return boards[boardIndex][pos.first][pos.second] == '#';
 }
 
 bool otherLionIsOpen(){
     string whiteLion;
     string blackLion;
-    vector<string> res = splitString(tempPositions[4], ' ');
+    vector<string> res = splitString(positions[boardIndex][4], ' ');
     whiteLion = res[2];
-    res = splitString(tempPositions[5], ' ');
+    res = splitString(positions[boardIndex][5], ' ');
     blackLion = res[2];
+    // cout<<whiteLion<<endl;
+    // cout<<blackLion<<endl;
     pair<int, int> posWhite = convertCoordinates(whiteLion);
     pair<int, int> posBlack = convertCoordinates(blackLion);
     if(posWhite.second==posBlack.second){
         for(int i=posBlack.first+1; i<posWhite.first; i++){
             if(!isEmpty({i, posBlack.second})){
+                // cout<<posBlack.first<<','<<posBlack.second<<endl;
                 return false;
             }
         }
@@ -134,36 +423,39 @@ bool otherLionIsOpen(){
 }
 
 bool isDiagonal(){
-    if(tempBoard[3][3]=='#' && tolower(tempBoard[4][2])=='l' && tolower(tempBoard[2][4])=='l'){
+    if(boards[boardIndex][3][3]=='#' && tolower(boards[boardIndex][4][2])=='l' && tolower(boards[boardIndex][2][4])=='l'){
         return true;
     }
-    else if(tempBoard[3][3]=='#' && tolower(tempBoard[2][2])=='l' && tolower(tempBoard[4][4])=='l'){
+    else if(boards[boardIndex][3][3]=='#' && tolower(boards[boardIndex][2][2])=='l' && tolower(boards[boardIndex][4][4])=='l'){
         return true;
     }
     return false;
 }
 
-vector<string> lionMoves(vector<string> &moves){
+vector<string> lionMoves(){
+    // TODO: take care of situation when other lion is open
     string coord;
     string otherLion;
     vector<string> res;
-    if(tempTurn=='b'){
-        coord = splitString(tempPositions[5], ' ')[2];
-        res = splitString(tempPositions[4], ' ');
+    if(turn[boardIndex][0]=='b'){
+        coord = splitString(positions[boardIndex][5], ' ')[2];
+        res = splitString(positions[boardIndex][4], ' ');
         if (res.size()>2)
         {
             otherLion = res[2];
         }
     }
     else{
-        coord = splitString(tempPositions[4], ' ')[2];
-        res = splitString(tempPositions[5], ' ');
+        coord = splitString(positions[boardIndex][4], ' ')[2];
+        res = splitString(positions[boardIndex][5], ' ');
         if (res.size()>2)
         {
             otherLion = res[2];
         }
     }
     pair<int, int> pos = convertCoordinates(coord);
+    // cout<< pos.first << ',' << pos.second << endl;
+    vector<string> moves;
     for(int i=0; i<lionPossibleMoves.size(); i++){
         pair<int, int> newMove = {pos.first+lionPossibleMoves[i].first, pos.second+lionPossibleMoves[i].second};
         if(lionIsInBounds(newMove)){
@@ -184,28 +476,31 @@ vector<string> lionMoves(vector<string> &moves){
     return moves;
 }
 
-vector<string> zebraMoves(vector<string> &moves){
+vector<string> zebraMoves(){
     string coord;
     vector<string> res;
-    if(tempTurn=='b'){
-        res = splitString(tempPositions[7], ' ');
+    if(turn[boardIndex][0]=='b'){
+        res = splitString(positions[boardIndex][7], ' ');
         if(res.size()<3){
             return {};
         }
         coord = res[2];
     }
     else{
-        res = splitString(tempPositions[6], ' ');
+        res = splitString(positions[boardIndex][6], ' ');
         if(res.size()<3){
             return {};
         }
         coord = res[2];
     }
     pair<int, int> pos = convertCoordinates(coord);
+    // cout<< pos.first << ',' << pos.second << endl;
+    vector<string> moves;
     for(int i=0; i<zebraPossibleMoves.size(); i++){
         pair<int, int> newMove = {pos.first+zebraPossibleMoves[i].first, pos.second+zebraPossibleMoves[i].second};
         if(isInBounds(newMove)){
             if(!isTeamMate(pos, newMove)){
+                // cout<<newMove.first <<','<< newMove.second<<endl;
                 moves.push_back(coordinatesToString(coord, newMove.second, newMove.first));
             }
         }
@@ -214,24 +509,26 @@ vector<string> zebraMoves(vector<string> &moves){
     return moves;
 }
 
-vector<string> elephantMoves(vector<string> &moves){
+vector<string> elephantMoves(){
     vector<string> coords;
-    if(tempTurn=='b'){
-        vector<string> res = splitString(tempPositions[3], ' ');
+    if(turn[boardIndex][0]=='b'){
+        vector<string> res = splitString(positions[boardIndex][3], ' ');
         for(int i=2; i<res.size(); i++){
             coords.push_back(res[i]);
         }
     }
     else{
-        vector<string> res = splitString(tempPositions[2], ' ');
+        vector<string> res = splitString(positions[boardIndex][2], ' ');
         for(int i=2; i<res.size(); i++){
             coords.push_back(res[i]);
         }
     }
 
+    vector<string> moves;
     for(int k=0; k<coords.size(); k++){
         string coord = coords[k];
         pair<int, int> pos = convertCoordinates(coord);
+        // cout<< pos.first << ',' << pos.second << endl;
         for(int i=0; i<elephantPossibleMoves.size(); i++){
             pair<int, int> newMove = {pos.first+elephantPossibleMoves[i].first, pos.second+elephantPossibleMoves[i].second};
             if(isInBounds(newMove)){
@@ -247,10 +544,10 @@ vector<string> elephantMoves(vector<string> &moves){
 }
 
 
-vector<string> blackPawnMoves(vector<string> &moves){
+vector<string> blackPawnMoves(){
     vector<string> coords;
 
-    vector<string> res = splitString(tempPositions[1], ' ');
+    vector<string> res = splitString(positions[boardIndex][1], ' ');
     if(res.size()<3){
         return {};
     }
@@ -258,9 +555,11 @@ vector<string> blackPawnMoves(vector<string> &moves){
         coords.push_back(res[i]);
     }
 
+    vector<string> moves;
     for(int k=0; k<coords.size(); k++){
         string coord = coords[k];
         pair<int, int> pos = convertCoordinates(coord);
+        // cout<< pos.first << ',' << pos.second << endl;
         if(pos.first>3){
             for(int i=0; i<superBlackPawnPossibleMoves.size(); i++){
                 pair<int, int> newMove = {pos.first+superBlackPawnPossibleMoves[i].first, pos.second+superBlackPawnPossibleMoves[i].second};
@@ -301,10 +600,10 @@ vector<string> blackPawnMoves(vector<string> &moves){
     return moves;
 }
 
-vector<string> whitePawnMoves(vector<string> &moves){
+vector<string> whitePawnMoves(){
     vector<string> coords;
 
-    vector<string> res = splitString(tempPositions[0], ' ');
+    vector<string> res = splitString(positions[boardIndex][0], ' ');
     if(res.size()<3){
         return {};
     }
@@ -312,6 +611,7 @@ vector<string> whitePawnMoves(vector<string> &moves){
         coords.push_back(res[i]);
     }
 
+    vector<string> moves;
     for(int k=0; k<coords.size(); k++){
         string coord = coords[k];
         pair<int, int> pos = convertCoordinates(coord);
@@ -356,12 +656,12 @@ vector<string> whitePawnMoves(vector<string> &moves){
     return moves;
 }
 
-vector<string> pawnMoves(vector<string> &moves){
-    if(tempTurn=='b'){
-        return blackPawnMoves(moves);
+vector<string> pawnMoves(){
+    if(turn[boardIndex][0]=='b'){
+        return blackPawnMoves();
     }
     else{
-        return whitePawnMoves(moves);
+        return whitePawnMoves();
     }
 }
 
@@ -405,7 +705,7 @@ string boardToFEN(vector<vector<char>> board){
 
 void memoriseRiverPieces(vector<pair<char, string>> &whitePiecesInRiver, vector<pair<char, string>> &blackPiecesInRiver){
     for(int i=0; i<7; i++){
-        char piece = tempBoard[3][i];
+        char piece = boards[boardIndex][3][i];
         string pos = coordinatesToString("", i, 3);
         if(isBlack(piece)){
             blackPiecesInRiver.push_back({piece, pos});
@@ -418,12 +718,12 @@ void memoriseRiverPieces(vector<pair<char, string>> &whitePiecesInRiver, vector<
 
 void checkIfBlackPiecesStillInRiver(vector<pair<char, string>> blackPiecesInRiver){
     for(int i=0; i<7; i++){
-        char piece = tempBoard[3][i];
+        char piece = boards[boardIndex][3][i];
         string pos = coordinatesToString("", i, 3);
         for(int j=0; j<blackPiecesInRiver.size(); j++){
             pair<char, string> temp = blackPiecesInRiver[j];
             if(temp.first==piece && temp.second==pos){
-                tempBoard[3][i] = '#';
+                boards[boardIndex][3][i] = '#';
             }
         }
     }
@@ -431,60 +731,102 @@ void checkIfBlackPiecesStillInRiver(vector<pair<char, string>> blackPiecesInRive
 
 void checkIfWhitePiecesStillInRiver(vector<pair<char, string>> whitePiecesInRiver){
     for(int i=0; i<7; i++){
-        char piece = tempBoard[3][i];
+        char piece = boards[boardIndex][3][i];
         string pos = coordinatesToString("", i, 3);
         for(int j=0; j<whitePiecesInRiver.size(); j++){
             pair<char, string> temp = whitePiecesInRiver[j];
             if(temp.first==piece && temp.second==pos){
-                tempBoard[3][i] = '#';
+                boards[boardIndex][3][i] = '#';
             }
         }
     }
 }
 
-string makeMove(string move){
+// bool isLionCornered(char lion){
+//     if(){
+
+//     }
+//     return true;
+// }
+
+void makeMove(){
     vector<pair<char, string>> whitePiecesInRiver;
     vector<pair<char, string>> blackPiecesInRiver;
 
     memoriseRiverPieces(whitePiecesInRiver, blackPiecesInRiver);
 
+    string move = moves[boardIndex];
     string initialPos = move.substr(0, 2);
     string wantToMoveTo = move.substr(2, 2);
 
     pair<int, int> current = convertCoordinates(initialPos);
     pair<int, int> next = convertCoordinates(wantToMoveTo);
 
-    char piece = tempBoard[current.first][current.second];
+    char piece = boards[boardIndex][current.first][current.second];
 
-    tempBoard[next.first][next.second] = piece;
-    tempBoard[current.first][current.second] = '#';
-    if(current.first==3 && next.first==3){
-        tempBoard[next.first][next.second] = '#';
+    vector<string> possibleMoves;
+    if(piece=='l' || piece=='L'){
+        possibleMoves = lionMoves();
+    }
+    else if(piece=='e' || piece=='E'){
+        possibleMoves = elephantMoves();
+    }
+    else if(piece=='z' || piece=='Z'){
+        possibleMoves = zebraMoves();
+    }
+    else if(piece=='p' || piece=='P'){
+        possibleMoves = pawnMoves();
+    }
+
+    bool isGameWon = false;
+
+    if(find(possibleMoves.begin(), possibleMoves.end(), move) != possibleMoves.end()){
+        if(boards[boardIndex][next.first][next.second]=='l' || boards[boardIndex][next.first][next.second]=='L'){
+            isGameWon = true;
+        }
+        boards[boardIndex][next.first][next.second] = piece;
+        boards[boardIndex][current.first][current.second] = '#';
+        if(current.first==3 && next.first==3){
+            boards[boardIndex][next.first][next.second] = '#';
+        }
     }
 
     // function to print boards as FEN string
-    if(tempTurn=='w'){
+    if(turn[boardIndex][0]=='w'){
         checkIfWhitePiecesStillInRiver(whitePiecesInRiver);
-        string FEN = boardToFEN(tempBoard);
-        return FEN + " b " + to_string(tempMoveNumber);
+        string FEN = boardToFEN(boards[boardIndex]);
+        cout<< FEN << " b " << to_string(moveNumbers[boardIndex]) <<endl;
+        if(isGameWon){
+            cout<<"White wins"<<endl;
+        }
+        else{
+            cout<< "Continue" << endl;
+        }
     }
     else{
-        tempMoveNumber++;
+        moveNumbers[boardIndex]++;
         checkIfBlackPiecesStillInRiver(blackPiecesInRiver);
-        string FEN = boardToFEN(tempBoard);
-        return FEN + " w " + to_string(tempMoveNumber);
+        string FEN = boardToFEN(boards[boardIndex]);
+        cout<< FEN << " w " << to_string(moveNumbers[boardIndex]) <<endl;
+        if(isGameWon){
+            cout<<"Black wins"<<endl;
+        }
+        else{
+            cout<< "Continue" << endl;
+        }
     }
 
 }
 
 int stateOfGame(){
+    vector<vector<char>> board = boards[boardIndex];
     bool isBlackFound = false;
     bool isWhiteFound = false;
     int numberOfPieces = 0;
 
     for(int row=0; row<7; row++){
         for(int col=0; col<7; col++){
-            char piece = tempBoard[row][col];
+            char piece = board[row][col];
             if(piece=='l'){
                 isBlackFound = true;
             }
@@ -511,7 +853,6 @@ int stateOfGame(){
     }
     else if(isBlackFound && isWhiteFound && numberOfPieces==2){
         // draw
-        // cout<<"number of pieces: "<<numberOfPieces<<endl;
         return 0;
     }
 
@@ -519,12 +860,12 @@ int stateOfGame(){
 }
 
 int calcWhiteMinusBlack(){
-    int blackScore = 100*(splitString(tempPositions[1], ' ').size()-2) + 
-        200*(splitString(tempPositions[3], ' ').size()-2) + 
-        300*(splitString(tempPositions[7], ' ').size()-2);
-    int whiteScore = 100*(splitString(tempPositions[0], ' ').size()-2) + 
-        200*(splitString(tempPositions[2], ' ').size()-2) + 
-        300*(splitString(tempPositions[6], ' ').size()-2);
+    int blackScore = 100*(splitString(positions[boardIndex][1], ' ').size()-2) + 
+        200*(splitString(positions[boardIndex][3], ' ').size()-2) + 
+        300*(splitString(positions[boardIndex][7], ' ').size()-2);
+    int whiteScore = 100*(splitString(positions[boardIndex][0], ' ').size()-2) + 
+        200*(splitString(positions[boardIndex][2], ' ').size()-2) + 
+        300*(splitString(positions[boardIndex][6], ' ').size()-2);
     return whiteScore-blackScore;
 }
 
@@ -537,7 +878,7 @@ int calcScore(){
     else if(stateOfLions==1){
         // black alive, white dead
         int res = -10000;
-        if(tempTurn=='b'){
+        if(turn[boardIndex][0]=='b'){
             return res*-1;
         }
         else{
@@ -547,7 +888,7 @@ int calcScore(){
     else if(stateOfLions==2){
         // black dead, white alive
         int res = 10000;
-        if(tempTurn=='b'){
+        if(turn[boardIndex][0]=='b'){
             return res*-1;
         }
         else{
@@ -556,89 +897,22 @@ int calcScore(){
     }
     else if(stateOfLions==3){
         // black alive, white alive
-        int toReturn = calcWhiteMinusBlack();
-        if(toReturn==0){
-            // all pieces still on board
-            return -2;
+        int res = calcWhiteMinusBlack();
+        if(turn[boardIndex][0]=='b'){
+            return res*-1;
         }
-        return toReturn;
+        else{
+            return res;
+        }
     }
 
     return -1;
 }
 
-bool isGameOver(){
-    int resIsGameOver = calcScore();
-    if(resIsGameOver==10000 || resIsGameOver==-10000 || resIsGameOver==0){
-        return true;
-    }
-    return false;
-}
-
-vector<string> generateMoves(){
-    vector<string> moves;
-
-    lionMoves(moves);
-    zebraMoves(moves);
-    elephantMoves(moves);
-    pawnMoves(moves);
-
-    return moves;
-}
-
-int minimax(string currentState, int depth){
-    tempPositions = settingUpBoard(currentState);
-    vector<string> res = splitString(currentState, ' ');
-    tempBoard = putIntoBoard(res[0]);
-    tempTurn = res[1][0];
-    tempMoveNumber = stoi(res[2]);
-
-
-    if(isGameOver() || depth <= 0){
-        int score = calcScore();
-        answers.push_back(score);
-        return score;
-    }
-
-
-    int value = -10000000;
-    vector<string> moves = generateMoves();
-
-
-    for(int i=0; i<moves.size(); i++){
-        tempPositions = settingUpBoard(currentState);
-        vector<string> res = splitString(currentState, ' ');
-        tempBoard = putIntoBoard(res[0]);
-        tempTurn = res[1][0];
-        tempMoveNumber = stoi(res[2]);
-        
-        string move = moves[i];
-        string nextState = makeMove(move);
-        int eval = -minimax(nextState, depth-1);
-        value = max(value, eval);
-    }
-
-    return value;
-}
-
 int main(){
     takeInInput();
-    for(boardIndex=0; boardIndex<FENStrings.size(); boardIndex++){
-        // cout<<FENStrings[boardIndex]<<endl;
-        // minimax("2ele1z/ppppppp/7/7/7/PPP1PPP/2ELE1Z w 4", 3);
-        string s = "1z5/pPp1lP1/5ep/4P1e/4L1p/2p2pP/7 w 12";
-        vector<string> sArr = splitString(s, ' ');
-        int value = minimax(s, 2);
-        if(sArr[1][0]=='b'){
-            value = value*-1;
-        }
-        cout << value << endl;
-        // cout << minimax(FENStrings[boardIndex], 0) << endl;
+    for(boardIndex=0; boardIndex<boards.size(); boardIndex++){
+        cout<< calcScore() <<endl;
     }
-
-    // for(int i=0; i<answers.size(); i++){
-    //     cout << answers[i] << ' ';
-    // }
-    // cout<<endl;
     
 }
