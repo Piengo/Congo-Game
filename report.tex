@@ -1,0 +1,64 @@
+\documentclass[twocolumn]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{charter}
+\usepackage{array,multirow,graphicx}
+\usepackage{float}
+\usepackage{xfrac}
+
+\title{COMS3005A Report: Congo}
+\author{Nontsikelelo Qebengu 1854790, Vuyo Ncume 2095458}
+\date{November 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Methods}
+
+For each algorithm being tested, describe exactly what was done and what changes or modifications you made. If you are working individually, you may have only two algorithms: minimax with the simple evaluation function, and alpha-beta pruning with the more complex one. In that case, describe how these worked briefly, but if you made any additional changes and are excited to share them here, please do.
+
+For those working in groups, please describe the further two modifications that were made on top of alpha-beta pruning and the advanced evaluation function. Describe all four cases. If you implemented more and would like to share, please do.
+For example:
+
+\subsection{Alpha-Beta Pruning}
+
+This search algorithm maintains 2 values namely alpha which represent the minimum score that the maximizing player us assured of and beta which represents the maximum score that the minimizing player is assured of. Since both players begin with their worst possible score then initially, alpha and beta values are negative infinity and positive infinity respectively. The maximizing player does not need to consider descendents of the node whenever beta is less than alpha, i.e whenever the maximum score that the minimizing player is assured of(beta) becomes less than the minimum score that the maximizing player is assured of(alpha). So, essentially this search algorithm stops evaluating a move when at least one possibility is found that proves the move to be worse than a previously examined move. When it is applied to a standard minimax tree, it returns the same move as a minimax would but it stops us from searching unneccesary branches in our search tree so that we can search deeper in the same amount of time.
+
+\subsection{Advanced evaluation function}
+
+We have a character variable to keep track of whose turn it is to play, then generate the moves that can be made by that player as well as the opponent. This function is used to calculate the raw score, i.e rawScore = ∆material + ∆mobility + ∆attack where material score is equivalent to 0 if the board contains only a black and white lion and no other pieces, is equivalent to 10000 if the black lion is missing then the white lion has won, is equivalent to -10000 if the white lion is missing then the black has won, otherwise it is equivalent to the total value of the white pieces minus the total value of the black pieces where the value of each piece is given by the table on part4.pdf on page 2, which is either negative whenever the pieces are black and positive otherwise. The mobility score is the number of moves each side is able to play, i.e the number of moves it has available. So, ∆mobility is equivalent to the white's mobility score minus the black's mobility score. The attack score is the number of opposite pieces that a player is threatening to capture, i.e the number whose target square contains a black piece. For each move whose target square  contains the black lion, 10 is added to the score and the same is done for each move whose target square contains a white lion. Thus, ∆attack will just be equivalent to the white's attack score minus the black's attack score.  The advanced evaluation function uses therawScore to tell if whether our AI is winning or losing.
+
+\subsection{Modification 3 (only necessary for groups)}
+
+Iterative deepening search is a graph strategy in which a depth-limited version of depth-first search is run repeatedly with increasing depth limits until the goal is reached. When performing iterative deepening search, we don't begin with the depth of 1 to ensure that we avoid the intial part where IDS gets off to a slow start and slowly as the depth increases that is when its performance is similar to that of the BFS. The main advantage of iterative deepening search is that it is memory efficient (better space complexity) because it uses a DFS which needs us only to remember our path from the root. It is a complete searching algorithm that eliminates the space constraints without sacrificing solution optimality. So, for high branching and relatively deep goals, only a small amount of work is done due to its memory efficiency.
+
+\subsection{Modification 4 (only necessary for groups)}
+
+The evaluation function was modified such that it takes into account the lion's safety was added, it uses the number of teammates around the lion to determine the lion's safety, which resulted in a slightly higher return on scores. So, essentially this evaluation function assisted our AI to make smarter moves for the same depth compared to the previous algorithms. The speed constraint that was brought about by the extra calculation was negligible as the extra bit calculation is contant and relatively quick.
+
+\section{Results}
+
+Present your results here. If you have two agents (because you're working individually) compare the two agents directly by playing two games from the starting position (with each agent taking a turn to be black and white).
+Otherwise, you may have three agents (or more): the minimax agent, the alpha-beta pruning agent, and the agent with all modifications implemented. Compare these agents in a round-robin tournament, where each agent plays the others twice (once as white and once as black).
+
+The kind of game you should play depends on how you have implemented everything. If your AI can search to a fixed depth only, then you should select a depth (greater than 1) for each agent such that they take roughly the same amount of time to return a move (e.g minimax to depth 2 and alpha-beta to depth 4). However, if your agent's are always able to return a move after a fixed amount of time (e.g. you're using iterative deepening), then play your games with fixed time controls (e.g. each agent is allowed X seconds per move). Report the results similarly to the tables below, where 1 -- 0 indicates a win for white, 0 -- 1 a win for black, and $\sfrac{1}{2}$ -- $\sfrac{1}{2}$ is a draw.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+                       &                     & \multicolumn{3}{c|}{Black}                                           \\ \hline
+                       &                     & \textbf{Minimax} & \textbf{Alpha-Beta}           & \textbf{My Agent} \\ \hline
+\parbox[t]{2mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{White}}} & \textbf{Minimax}    & --                & $\sfrac{1}{2}$ -- $\sfrac{1}{2}$ & 0 -- 1               \\ \cline{2-5}
+                       & \textbf{Alpha-Beta} & 1 -- 0              & --                             & 0 -- 1               \\ \cline{2-5}
+                       & \textbf{My Agent}   & 1 --0              & 1 -- 0                           & --                 \\ \hline
+\end{tabular}
+\caption{Results for tournament with e.g. 30 second time controls}
+\end{table}
+
+
+\section{Optional Additional Information}
+
+If there is anything else you wish to include, please do so here.
+
+\end{document}
