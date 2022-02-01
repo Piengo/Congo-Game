@@ -10,7 +10,7 @@
 * Uses alpha-beta pruning to reduce searched space and thus enable deeper searching for the agent in each game iteration.
 
 
-### Final improved agent modifications(mod.cpp):
+### Final improved agent(mod.cpp):
 * Iterative deepening search.
 * Evaluation function modified to take into account king's safety.
 
