@@ -2,7 +2,6 @@
 
 ## A minimax algorithm that plays a chess variant called congo.
 
-A base minimax algorithm with variations to it to make performance improvements.
 
 ### Base minimax agent(minimax.cpp):
 * A basic minimax implementation with simple evaluation function.
